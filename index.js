@@ -90,15 +90,16 @@ async function updateGist(data) {
   }
 
   // Used to index the API response
+  // Add more keys to map from the resp
   const keyMappings = {
     Running: {
-      key: "ytd_run_totals"
+      ytd_key: "ytd_run_totals"
     },
     Swimming: {
-      key: "ytd_swim_totals"
+      ytd_key: "ytd_swim_totals"
     },
     Cycling: {
-      key: "ytd_ride_totals"
+      ytd_key: "ytd_ride_totals"
     }
   };
 
@@ -107,21 +108,23 @@ async function updateGist(data) {
   let lines = Object.keys(keyMappings)
     .map(activityType => {
       // Store the activity name and distance
-      const { key } = keyMappings[activityType];
+      const { ytd_key } = keyMappings[activityType];
       try {
-        const { distance, moving_time } = data[key];
+        const { distance, moving_time, count } = data[ytd_key];
         totalDistance += distance;
         return {
           name: activityType,
           pace: (distance * 3600) / (moving_time ? moving_time : 1),
-          distance
+          distance,
+          count
         };
       } catch (error) {
         console.error(`Unable to get distance\n${error}`);
         return {
           name: activityType,
           pace: 0,
-          distance: 0
+          distance: 0,
+          count: 0
         };
       }
     })
@@ -130,19 +133,21 @@ async function updateGist(data) {
       const percent = (activity["distance"] / totalDistance) * 100;
       const pacePH = formatDistance(activity["pace"]);
       const pace = pacePH.substring(0, pacePH.length - 3); // strip unit
+      const count = activity["count"];
       return {
         ...activity,
         distance: formatDistance(activity["distance"]),
         pace: `${pace}/h`,
-        barChart: generateBarChart(percent, 19)
+        barChart: generateBarChart(percent, 19),
+        count: count
       };
     })
     .map(activity => {
       // Format the data to be displayed in the Gist
-      const { name, distance, pace, barChart } = activity;
-      return `${name.padEnd(10)} ${distance.padStart(
-        13
-      )} ${barChart} ${pace.padStart(7)}`;
+      const { name, distance, pace, barChart, count } = activity;
+      return `${name.padEnd(13)} ${distance.padStart(
+        10
+      )} ${barChart} ${pace.padStart(7)} ${count} times`;
     });
 
   // Last 4 weeks
@@ -157,14 +162,15 @@ async function updateGist(data) {
     }
   }
   lines.push(
-    `Last month ${formatDistance(monthDistance).padStart(
-      13
-    )} ${(monthAchievements
-      ? `${monthAchievements} achievement${monthAchievements > 1 ? "s" : ""}`
-      : ""
-    ).padStart(19)} ${`${(monthTime / 3600).toFixed(0)}`.padStart(3)}:${(
-      monthTime / 60
-    ).toFixed(0) % 60}h`
+    `\nRecenlty, I've covered ${formatDistance(
+      monthDistance
+    )} across all activities, receiving ${
+      monthAchievements
+        ? `${monthAchievements} achievement${monthAchievements > 1 ? "s" : ""}`
+        : ""
+    } over ${`${(monthTime / 3600).toFixed(0)}`}h:${(monthTime / 60).toFixed(
+      0
+    ) % 60}m`
   );
 
   try {
@@ -174,7 +180,7 @@ async function updateGist(data) {
       gist_id: gistId,
       files: {
         [filename]: {
-          filename: `YTD Strava Metrics`,
+          filename: `Kan's Strava Activity`,
           content: lines.join("\n")
         }
       }
