@@ -28,7 +28,7 @@ jobs:
           keys:
             - strava-auth-{{ .Environment.CIRCLE_PREVIOUS_BUILD_NUM }}
             - strava-auth-
-      - run: node index.js
+      - run: npm start
       - save_cache:
           key: strava-auth-{{ .Environment.CIRCLE_BUILD_NUM }}
           paths:
