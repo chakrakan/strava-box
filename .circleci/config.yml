@@ -45,7 +45,7 @@ workflows:
     triggers:
       - schedule:
           # Run once nightly at 10pm
-          cron: "00 22 * * *"
+          cron: "00 2 * * *"
           filters:
             branches:
               only:
