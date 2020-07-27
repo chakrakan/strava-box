@@ -180,7 +180,7 @@ async function updateGist(data) {
       gist_id: gistId,
       files: {
         [filename]: {
-          filename: `Kan's Strava Activity`,
+          filename: `🚴 Kan's Strava Activity`,
           content: lines.join("\n")
         }
       }
