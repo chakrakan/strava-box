@@ -6,6 +6,8 @@
 
 ---
 
+[![Strava Box](https://circleci.com/gh/chakrakan/strava-box.svg?style=svg)](https://github.com/chakrakan/strava-box)
+
 ## Previous Work
 
 This repo is based off of [matchai's waka-box](https://github.com/matchai/waka-box).
