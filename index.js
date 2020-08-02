@@ -110,21 +110,19 @@ async function updateGist(data) {
       // Store the activity name and distance
       const { ytd_key } = keyMappings[activityType];
       try {
-        const { distance, moving_time, count } = data[ytd_key];
+        const { distance, moving_time } = data[ytd_key];
         totalDistance += distance;
         return {
           name: activityType,
           pace: (distance * 3600) / (moving_time ? moving_time : 1),
           distance,
-          count
         };
       } catch (error) {
         console.error(`Unable to get distance\n${error}`);
         return {
           name: activityType,
           pace: 0,
-          distance: 0,
-          count: 0
+          distance: 0
         };
       }
     })
@@ -133,21 +131,19 @@ async function updateGist(data) {
       const percent = (activity["distance"] / totalDistance) * 100;
       const pacePH = formatDistance(activity["pace"]);
       const pace = pacePH.substring(0, pacePH.length - 3); // strip unit
-      const count = activity["count"];
       return {
         ...activity,
         distance: formatDistance(activity["distance"]),
         pace: `${pace}/h`,
-        barChart: generateBarChart(percent, 19),
-        count: count
+        barChart: generateBarChart(percent, 19)
       };
     })
     .map(activity => {
       // Format the data to be displayed in the Gist
-      const { name, distance, pace, barChart, count } = activity;
+      const { name, distance, pace, barChart } = activity;
       return `${name.padEnd(13)} ${distance.padStart(
         10
-      )} ${barChart} ${pace.padStart(7)} ${count} times`;
+      )} ${barChart} ${pace.padStart(7)}`;
     });
 
   // Last 4 weeks
