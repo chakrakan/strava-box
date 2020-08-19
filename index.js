@@ -103,6 +103,8 @@ async function updateGist(data) {
     }
   };
 
+  console.debug(data["ytd_ride_totals"]);
+
   let totalDistance = 0;
 
   let lines = Object.keys(keyMappings)
@@ -115,7 +117,7 @@ async function updateGist(data) {
         return {
           name: activityType,
           pace: (distance * 3600) / (moving_time ? moving_time : 1),
-          distance,
+          distance
         };
       } catch (error) {
         console.error(`Unable to get distance\n${error}`);
