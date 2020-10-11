@@ -139,14 +139,14 @@ async function updateGist(data) {
     Running: {
       ytd_key: "ytd_run_totals"
     },
-    Swimming: {
-      ytd_key: "ytd_swim_totals"
+    Walking: {
+      ytd_key: "ytd_walk_totals"
     },
     Cycling: {
       ytd_key: "ytd_ride_totals"
     },
-    Walking: {
-      ytd_key: "ytd_walk_totals"
+    Swimming: {
+      ytd_key: "ytd_swim_totals"
     }
   };
 
