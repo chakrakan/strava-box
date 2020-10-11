@@ -6,13 +6,14 @@ const {
   GIST_ID: gistId,
   GITHUB_TOKEN: githubToken,
   STRAVA_ATHLETE_ID: stravaAtheleteId,
-  STRAVA_REFRESH_TOKEN: stravaRefreshToken,
   STRAVA_CLIENT_ID: stravaClientId,
+  STRAVA_CLIENT_CODE: stravaClientCode,
   STRAVA_CLIENT_SECRET: stravaClientSecret,
   UNITS: units
 } = process.env;
 
 const API_BASE = "https://www.strava.com/api/v3/athletes/";
+const API_ACTIVITIES = "https://www.strava.com/api/v3/athlete/activities";
 const AUTH_CACHE_FILE = "strava-auth.json";
 
 const octokit = new Octokit({
@@ -29,9 +30,7 @@ async function main() {
  */
 async function getStravaToken() {
   // default env vars go in here (temp cache)
-  let cache = {
-    stravaRefreshToken: stravaRefreshToken
-  };
+  let cache = {};
   // try to read cache from disk if already exists
   try {
     const jsonStr = fs.readFileSync(AUTH_CACHE_FILE);
@@ -42,21 +41,39 @@ async function getStravaToken() {
   } catch (error) {
     console.log(error);
   }
-  console.debug(`ref: ${cache.stravaRefreshToken.substring(0, 6)}`);
+  // console.debug(`ref: ${cache.stravaRefreshToken.substring(0, 6)}`);
+  let data;
 
-  // get new tokens
-  const data = await fetch("https://www.strava.com/oauth/token", {
-    method: "post",
-    body: JSON.stringify({
-      grant_type: "refresh_token",
-      client_id: stravaClientId,
-      client_secret: stravaClientSecret,
-      refresh_token: cache.stravaRefreshToken
-    }),
-    headers: { "Content-Type": "application/json" }
-  })
-    .then(data => data.json())
-    .catch(error => console.debug(error));
+  if (Object.keys(cache).length !== 0) {
+    // update refresh tokens
+    data = await fetch("https://www.strava.com/oauth/token", {
+      method: "post",
+      body: JSON.stringify({
+        grant_type: "refresh_token",
+        client_id: stravaClientId,
+        client_secret: stravaClientSecret,
+        refresh_token: cache.stravaRefreshToken
+      }),
+      headers: { "Content-Type": "application/json" }
+    })
+      .then(data => data.json())
+      .catch(error => console.debug(error));
+  } else {
+    // get new tokens
+    data = await fetch("https://www.strava.com/oauth/token", {
+      method: "post",
+      body: JSON.stringify({
+        grant_type: "authorization_code",
+        client_id: stravaClientId,
+        client_secret: stravaClientSecret,
+        code: stravaClientCode
+      }),
+      headers: { "Content-Type": "application/json" }
+    })
+      .then(data => data.json())
+      .catch(error => console.debug(error));
+  }
+  console.log(data);
 
   cache.stravaAccessToken = data.access_token;
   cache.stravaRefreshToken = data.refresh_token;
@@ -74,9 +91,36 @@ async function getStravaToken() {
  * The distance returned by the API is in meters
  */
 async function getStravaStats() {
-  const API = `${API_BASE}${stravaAtheleteId}/stats?access_token=${await getStravaToken()}`;
+  const stravaToken = await getStravaToken();
+  const API = `${API_BASE}${stravaAtheleteId}/stats?access_token=${stravaToken}`;
+  const activityData = await fetch(API_ACTIVITIES, {
+    method: "get",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${stravaToken}`
+    }
+  })
+    .then(data => data.json())
+    .catch(error => console.debug(error));
+
+  let walkDistance = 0;
+  let movingTime = 0;
+  let count = 0;
+
+  activityData.forEach(activity => {
+    if (activity.type === "Walk") {
+      walkDistance += activity.distance;
+      movingTime += activity.moving_time;
+      count++;
+    }
+  });
 
   const json = await fetch(API).then(data => data.json());
+  json.ytd_walk_totals = {
+    count: count,
+    distance: walkDistance,
+    moving_time: movingTime
+  };
   return json;
 }
 
@@ -100,6 +144,9 @@ async function updateGist(data) {
     },
     Cycling: {
       ytd_key: "ytd_ride_totals"
+    },
+    Walking: {
+      ytd_key: "ytd_walk_totals"
     }
   };
 
@@ -115,7 +162,7 @@ async function updateGist(data) {
         return {
           name: activityType,
           pace: (distance * 3600) / (moving_time ? moving_time : 1),
-          distance,
+          distance
         };
       } catch (error) {
         console.error(`Unable to get distance\n${error}`);
