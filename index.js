@@ -14,7 +14,7 @@ const {
 
 const API_BASE = "https://www.strava.com/api/v3/athletes/";
 const API_ACTIVITIES = "https://www.strava.com/api/v3/athlete/activities";
-const AUTH_CACHE_FILE = "strava-auth.json";
+const AUTH_CACHE_FILE = "strava-auth-updated.json";
 
 const octokit = new Octokit({
   auth: `token ${githubToken}`
