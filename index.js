@@ -144,10 +144,10 @@ async function updateGist(data) {
     },
     Cycling: {
       ytd_key: "ytd_ride_totals"
-    },
-    Swimming: {
-      ytd_key: "ytd_swim_totals"
     }
+    // Swimming: {
+    //   ytd_key: "ytd_swim_totals"
+    // }
   };
 
   let totalDistance = 0;
