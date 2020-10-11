@@ -11,11 +11,11 @@ commands:
       - checkout
       - restore_cache:
           keys:
-            - dependency-cache-updated-{{ checksum "package.json" }}
-            - dependency-cache-updated
+            - dependency-cache-{{ .Environment.CACHE_VERSION }}-{{ checksum "package.json" }}
+            - dependency-cache-
       - run: npm install
       - save_cache:
-          key: dependency-cache-updated-{{ checksum "package.json" }}
+          key: dependency-cache-{{ .Environment.CACHE_VERSION }}-{{ checksum "package.json" }}
           paths:
             - node_modules
 
@@ -26,13 +26,13 @@ jobs:
       - install
       - restore_cache:
           keys:
-            - strava-auth-updated-{{ .Environment.CIRCLE_PREVIOUS_BUILD_NUM }}
-            - strava-auth-updated
+            - strava-auth-{{ .Environment.CACHE_VERSION }}-{{ .Environment.CIRCLE_PREVIOUS_BUILD_NUM }}
+            - strava-auth-
       - run: npm start
       - save_cache:
-          key: strava-auth-updated-{{ .Environment.CIRCLE_BUILD_NUM }}
+          key: strava-auth-{{ .Environment.CACHE_VERSION }}-{{ .Environment.CIRCLE_BUILD_NUM }}
           paths:
-            - strava-auth-updated.json
+            - strava-auth.json
 
 workflows:
   version: 2
