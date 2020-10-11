@@ -35,6 +35,6 @@ This repo is based off of [matchai's waka-box](https://github.com/matchai/waka-b
 - **GITHUB_TOKEN:** The GitHub token generated above.
 - **STRAVA_ATHLETE_ID:** The ID you got from visiting your profile page.
 - **STRAVA_CLIENT_ID:** The client ID you got from the Strava API page.
+- **STRAVA_CLIENT_CODE:** Client code you receive from Strava's Oauth flow: `https://www.strava.com/oauth/authorize?client_id=<YOUR_CLIENT_ID>&response_type=code&redirect_uri=https://localhost&approval_prompt=force&scope=read,activity:read_all`
 - **STRAVA_CLIENT_SECRET:** The client secret you got from the Strava API page.
-- **STRAVA_REFRESH_TOKEN:** The refresh token you got from the Strava API page.
 - (optional) **UNITS:** `miles` or `metres` or `meters` (default)
