@@ -73,7 +73,6 @@ async function getStravaToken() {
       .then(data => data.json())
       .catch(error => console.debug(error));
   }
-  console.log(data);
 
   cache.stravaAccessToken = data.access_token;
   cache.stravaRefreshToken = data.refresh_token;
