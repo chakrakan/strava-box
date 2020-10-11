@@ -12,7 +12,7 @@ commands:
       - restore_cache:
           keys:
             - dependency-cache-{{ .Environment.CACHE_VERSION }}-{{ checksum "package.json" }}
-            - dependency-cache-
+            - dependency-cache-v2-
       - run: npm install
       - save_cache:
           key: dependency-cache-{{ .Environment.CACHE_VERSION }}-{{ checksum "package.json" }}
@@ -27,7 +27,7 @@ jobs:
       - restore_cache:
           keys:
             - strava-auth-{{ .Environment.CACHE_VERSION }}-{{ .Environment.CIRCLE_PREVIOUS_BUILD_NUM }}
-            - strava-auth-
+            - strava-auth-v2-
       - run: npm start
       - save_cache:
           key: strava-auth-{{ .Environment.CACHE_VERSION }}-{{ .Environment.CIRCLE_BUILD_NUM }}
