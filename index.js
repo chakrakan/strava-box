@@ -196,7 +196,7 @@ async function updateGist(data) {
   let monthDistance = 0;
   let monthTime = 0;
   let monthAchievements = 0;
-  console.log(data);
+
   for (let [key, value] of Object.entries(data)) {
     if (key.startsWith("recent_") && key.endsWith("_totals")) {
       monthDistance += value["distance"];
