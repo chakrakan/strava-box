@@ -41,7 +41,7 @@ async function getStravaToken() {
   } catch (error) {
     console.log(error);
   }
-  // console.debug(`ref: ${cache.stravaRefreshToken.substring(0, 6)}`);
+
   let data;
 
   if (Object.keys(cache).length !== 0) {
@@ -196,6 +196,7 @@ async function updateGist(data) {
   let monthDistance = 0;
   let monthTime = 0;
   let monthAchievements = 0;
+  console.log(data);
   for (let [key, value] of Object.entries(data)) {
     if (key.startsWith("recent_") && key.endsWith("_totals")) {
       monthDistance += value["distance"];
@@ -203,13 +204,12 @@ async function updateGist(data) {
       monthAchievements += value["achievement_count"];
     }
   }
+
   lines.push(
     `\nRecenlty, I've covered ${formatDistance(
       monthDistance
-    )} across all activities, receiving ${
-      monthAchievements
-        ? `${monthAchievements} achievement${monthAchievements > 1 ? "s" : ""}`
-        : ""
+    )} across all activities, receiving ${monthAchievements} award${
+      monthAchievements != 1 ? "s" : ""
     } over ${`${(monthTime / 3600).toFixed(0)}`}h:${(monthTime / 60).toFixed(
       0
     ) % 60}m`
