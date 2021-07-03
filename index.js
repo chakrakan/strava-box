@@ -196,6 +196,8 @@ async function updateGist(data) {
   let monthDistance = 0;
   let monthTime = 0;
   let monthAchievements = 0;
+  const monthInSeconds = 2592000;
+  const weekInSeconds = 604800;
 
   for (let [key, value] of Object.entries(data)) {
     if (key.startsWith("recent_") && key.endsWith("_totals")) {
@@ -203,10 +205,16 @@ async function updateGist(data) {
       monthTime += value["moving_time"];
       monthAchievements += value["achievement_count"];
     }
+
+    // add overall walk stats to recents as well
+    if (key.includes("ytd_walk_totals")) {
+      monthDistance += value["distance"];
+      monthTime += value["moving_time"];
+    }
   }
 
   lines.push(
-    `\nRecenlty, I've covered ${formatDistance(
+    `\nRecently, I've covered ${formatDistance(
       monthDistance
     )} across all activities, receiving ${monthAchievements} award${
       monthAchievements != 1 ? "s" : ""

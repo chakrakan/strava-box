@@ -3,7 +3,14 @@
   "version": "0.0.1",
   "description": "🏃‍♂️🏃‍♀️ Update a gist to contain your weekly Strava distances",
   "author": "John Pham <john@pham.codes>",
+  "contributors": [
+    "Kanisk Chakraborty <dev.kanisk@gmail.com>"
+  ],
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chakrakan/strava-box"
+  },
   "scripts": {
     "start": "node -r dotenv/config index.js"
   },
