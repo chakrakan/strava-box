@@ -15,9 +15,9 @@
     "start": "node -r dotenv/config index.js"
   },
   "dependencies": {
-    "@octokit/rest": "^16.28.2",
+    "@octokit/rest": "16.28.2",
     "dotenv": "10.0.0",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "2.6.1"
   },
   "devDependencies": {
     "husky": "7.0.1",
