@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@octokit/rest": "16.43.2",
-    "dotenv": "16.1.4",
+    "dotenv": "16.2.0",
     "node-fetch": "2.6.11"
   },
   "devDependencies": {
